@@ -9,6 +9,8 @@ import {
   Image
 } from 'react-native';
 
+import DetailPage from './DetailPage';
+
 const styles = StyleSheet.create({
   container: {
     padding: 30,
@@ -84,6 +86,26 @@ class MainPage extends Component{
     });
   }
 
+  findPressed(){
+    var query = 'https://facebook.github.io/react-native/movies.json';
+    this.executeQuery(query);
+  }
+
+  executeQuery(query){
+    fetch(query, {method: 'GET'})
+      .then(response => response.json())
+      .then(responseData => {
+        console.log(responseData.movies);
+      this.props.navigator.push({
+        title: 'Results',
+        component: DetailPage,
+        passProps: {list: responseData.movies}
+      });
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
   render(){
     return (
       <View style={styles.container}>
@@ -98,17 +120,17 @@ class MainPage extends Component{
             style={styles.searchInput}
             value={this.state.location}
             onChange={this.locationChange.bind(this)}
-            placeholder='input your location' />
+            placeholder='your location' />
         </View>
         <View style={styles.flowRight}>
           <TextInput
             style={styles.searchInput}
             value={this.state.age}
             onChange={this.ageChange.bind(this)}
-            placeholder='input your baby age' />
+            placeholder='your baby age' />
         </View>
         <View style={styles.flowRight}>
-          <TouchableHighlight style={styles.button} underlayColor='#99d9f4'>
+          <TouchableHighlight style={styles.button} underlayColor='#99d9f4' onPress={this.findPressed.bind(this)}>
             <Text style={styles.buttonText}>Go</Text>
           </TouchableHighlight>
         </View>
